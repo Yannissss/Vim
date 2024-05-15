@@ -1,3 +1,40 @@
+# Préface
+
+Trouvez ci-dessous la procédure d'installation mise à jour afin d'installer et tester le modèle Vim sur ROMEO.
+
+Téléchargez les modèles Hugging Face et mettez dans le répertoire ckpts/.
+
+Les commandes qui ont été utilisées dans la validation des modèles sont les suivantes:
+```bash
+# Vim-tiny
+python vim/main.py \
+    --eval \
+    --resume ckpts/vim_t_midclstok_76p1acc.pth \
+    --model vim_tiny_patch16_224_bimambav2_final_pool_mean_abs_pos_embed_with_midclstok_div2 \
+    --data-path ../imagenet/
+
+# Vim-tiny+
+python vim/main.py \
+    --eval \
+    --resume ckpts/vim_t_midclstok_ft_78p3acc.pth \
+    --model vim_tiny_patch16_stride8_224_bimambav2_final_pool_mean_abs_pos_embed_with_midclstok_div2 \
+    --data-path ../imagenet/
+
+# Vim-small
+python vim/main.py \
+    --eval \
+    --resume ckpts/vim_s_midclstok_80p5acc.pth \
+    --model vim_small_patch16_224_bimambav2_final_pool_mean_abs_pos_embed_with_midclstok_div2 \
+    --data-path ../imagenet/
+
+# Vim-small+
+python vim/main.py \
+    --eval \
+    --resume ckpts/vim_t_midclstok_ft_78p3acc.pth \
+    --model vim_small_patch16_stride8_224_bimambav2_final_pool_mean_abs_pos_embed_with_midclstok_div2 \
+    --data-path ../imagenet/
+```
+
 <div align="center">
 <h1>Vision Mamba </h1>
 <h3>Efficient Visual Representation Learning with Bidirectional State Space Model</h3>
