@@ -34,7 +34,8 @@ import mlflow
 
 
 def get_args_parser():
-    parser = argparse.ArgumentParser('DeiT training and evaluation script', add_help=False)
+    parser = argparse.ArgumentParser(
+        'DeiT training and evaluation script', add_help=False)
     parser.add_argument('--batch-size', default=64, type=int)
     parser.add_argument('--epochs', default=300, type=int)
     parser.add_argument('--bce-loss', action='store_true')
@@ -43,7 +44,8 @@ def get_args_parser():
     # Model parameters
     parser.add_argument('--model', default='deit_base_patch16_224', type=str, metavar='MODEL',
                         help='Name of model to train')
-    parser.add_argument('--input-size', default=224, type=int, help='images input size')
+    parser.add_argument('--input-size', default=224,
+                        type=int, help='images input size')
 
     parser.add_argument('--drop', type=float, default=0.0, metavar='PCT',
                         help='Dropout rate (default: 0.)')
@@ -51,10 +53,13 @@ def get_args_parser():
                         help='Drop path rate (default: 0.1)')
 
     parser.add_argument('--model-ema', action='store_true')
-    parser.add_argument('--no-model-ema', action='store_false', dest='model_ema')
+    parser.add_argument(
+        '--no-model-ema', action='store_false', dest='model_ema')
     parser.set_defaults(model_ema=True)
-    parser.add_argument('--model-ema-decay', type=float, default=0.99996, help='')
-    parser.add_argument('--model-ema-force-cpu', action='store_true', default=False, help='')
+    parser.add_argument('--model-ema-decay', type=float,
+                        default=0.99996, help='')
+    parser.add_argument('--model-ema-force-cpu',
+                        action='store_true', default=False, help='')
 
     # Optimizer parameters
     parser.add_argument('--opt', default='adamw', type=str, metavar='OPTIMIZER',
@@ -102,22 +107,25 @@ def get_args_parser():
     parser.add_argument('--aa', type=str, default='rand-m9-mstd0.5-inc1', metavar='NAME',
                         help='Use AutoAugment policy. "v0" or "original". " + \
                              "(default: rand-m9-mstd0.5-inc1)'),
-    parser.add_argument('--smoothing', type=float, default=0.1, help='Label smoothing (default: 0.1)')
+    parser.add_argument('--smoothing', type=float, default=0.1,
+                        help='Label smoothing (default: 0.1)')
     parser.add_argument('--train-interpolation', type=str, default='bicubic',
                         help='Training interpolation (random, bilinear, bicubic default: "bicubic")')
 
     parser.add_argument('--repeated-aug', action='store_true')
-    parser.add_argument('--no-repeated-aug', action='store_false', dest='repeated_aug')
+    parser.add_argument('--no-repeated-aug',
+                        action='store_false', dest='repeated_aug')
     parser.set_defaults(repeated_aug=True)
-    
+
     parser.add_argument('--train-mode', action='store_true')
-    parser.add_argument('--no-train-mode', action='store_false', dest='train_mode')
+    parser.add_argument('--no-train-mode',
+                        action='store_false', dest='train_mode')
     parser.set_defaults(train_mode=True)
-    
-    parser.add_argument('--ThreeAugment', action='store_true') #3augment
-    
-    parser.add_argument('--src', action='store_true') #simple random crop
-    
+
+    parser.add_argument('--ThreeAugment', action='store_true')  # 3augment
+
+    parser.add_argument('--src', action='store_true')  # simple random crop
+
     # * Random Erase params
     parser.add_argument('--reprob', type=float, default=0.25, metavar='PCT',
                         help='Random erase prob (default: 0.25)')
@@ -146,24 +154,28 @@ def get_args_parser():
     parser.add_argument('--teacher-model', default='regnety_160', type=str, metavar='MODEL',
                         help='Name of teacher model to train (default: "regnety_160"')
     parser.add_argument('--teacher-path', type=str, default='')
-    parser.add_argument('--distillation-type', default='none', choices=['none', 'soft', 'hard'], type=str, help="")
-    parser.add_argument('--distillation-alpha', default=0.5, type=float, help="")
+    parser.add_argument('--distillation-type', default='none',
+                        choices=['none', 'soft', 'hard'], type=str, help="")
+    parser.add_argument('--distillation-alpha',
+                        default=0.5, type=float, help="")
     parser.add_argument('--distillation-tau', default=1.0, type=float, help="")
-    
+
     # * Cosub params
-    parser.add_argument('--cosub', action='store_true') 
-    
+    parser.add_argument('--cosub', action='store_true')
+
     # * Finetuning params
-    parser.add_argument('--finetune', default='', help='finetune from checkpoint')
-    parser.add_argument('--attn-only', action='store_true') 
-    
+    parser.add_argument('--finetune', default='',
+                        help='finetune from checkpoint')
+    parser.add_argument('--attn-only', action='store_true')
+
     # Dataset parameters
     parser.add_argument('--data-path', default='/datasets01/imagenet_full_size/061417/', type=str,
                         help='dataset path')
     parser.add_argument('--data-set', default='IMNET', choices=['CIFAR', 'IMNET', 'INAT', 'INAT19'],
                         type=str, help='Image Net dataset path')
     parser.add_argument('--inat-category', default='name',
-                        choices=['kingdom', 'phylum', 'class', 'order', 'supercategory', 'family', 'genus', 'name'],
+                        choices=['kingdom', 'phylum', 'class', 'order',
+                                 'supercategory', 'family', 'genus', 'name'],
                         type=str, help='semantic granularity')
 
     parser.add_argument('--output_dir', default='',
@@ -174,9 +186,12 @@ def get_args_parser():
     parser.add_argument('--resume', default='', help='resume from checkpoint')
     parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
                         help='start epoch')
-    parser.add_argument('--eval', action='store_true', help='Perform evaluation only')
-    parser.add_argument('--eval-crop-ratio', default=0.875, type=float, help="Crop ratio for evaluation")
-    parser.add_argument('--dist-eval', action='store_true', default=False, help='Enabling distributed evaluation')
+    parser.add_argument('--eval', action='store_true',
+                        help='Perform evaluation only')
+    parser.add_argument('--eval-crop-ratio', default=0.875,
+                        type=float, help="Crop ratio for evaluation")
+    parser.add_argument('--dist-eval', action='store_true',
+                        default=False, help='Enabling distributed evaluation')
     parser.add_argument('--num_workers', default=10, type=int)
     parser.add_argument('--pin-mem', action='store_true',
                         help='Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU.')
@@ -185,11 +200,13 @@ def get_args_parser():
     parser.set_defaults(pin_mem=True)
 
     # distributed training parameters
-    parser.add_argument('--distributed', action='store_true', default=False, help='Enabling distributed training')
+    parser.add_argument('--distributed', action='store_true',
+                        default=False, help='Enabling distributed training')
     parser.add_argument('--world_size', default=1, type=int,
                         help='number of distributed processes')
-    parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
-    
+    parser.add_argument('--dist_url', default='env://',
+                        help='url used to set up distributed training')
+
     # amp about
     parser.add_argument('--if_amp', action='store_true')
     parser.add_argument('--no_amp', action='store_false', dest='if_amp')
@@ -197,22 +214,26 @@ def get_args_parser():
 
     # if continue with inf
     parser.add_argument('--if_continue_inf', action='store_true')
-    parser.add_argument('--no_continue_inf', action='store_false', dest='if_continue_inf')
+    parser.add_argument('--no_continue_inf',
+                        action='store_false', dest='if_continue_inf')
     parser.set_defaults(if_continue_inf=False)
 
     # if use nan to num
     parser.add_argument('--if_nan2num', action='store_true')
-    parser.add_argument('--no_nan2num', action='store_false', dest='if_nan2num')
+    parser.add_argument(
+        '--no_nan2num', action='store_false', dest='if_nan2num')
     parser.set_defaults(if_nan2num=False)
 
     # if use random token position
     parser.add_argument('--if_random_cls_token_position', action='store_true')
-    parser.add_argument('--no_random_cls_token_position', action='store_false', dest='if_random_cls_token_position')
-    parser.set_defaults(if_random_cls_token_position=False)    
+    parser.add_argument('--no_random_cls_token_position',
+                        action='store_false', dest='if_random_cls_token_position')
+    parser.set_defaults(if_random_cls_token_position=False)
 
     # if use random token rank
     parser.add_argument('--if_random_token_rank', action='store_true')
-    parser.add_argument('--no_random_token_rank', action='store_false', dest='if_random_token_rank')
+    parser.add_argument('--no_random_token_rank',
+                        action='store_false', dest='if_random_token_rank')
     parser.set_defaults(if_random_token_rank=False)
 
     parser.add_argument('--local-rank', default=0, type=int)
@@ -225,7 +246,8 @@ def main(args):
     print(args)
 
     if args.distillation_type != 'none' and args.finetune and not args.eval:
-        raise NotImplementedError("Finetuning with distillation not yet supported")
+        raise NotImplementedError(
+            "Finetuning with distillation not yet supported")
 
     device = torch.device(args.device)
 
@@ -239,7 +261,8 @@ def main(args):
 
     # log about
     run_name = args.output_dir.split("/")[-1]
-    if args.local_rank == 0 and args.gpu == 0:
+    # if args.local_rank == 0 and args.gpu == 0:
+    if args.local_rank == 0:
         mlflow.start_run(run_name=run_name)
         for key, value in vars(args).items():
             mlflow.log_param(key, value)
@@ -308,7 +331,6 @@ def main(args):
         img_size=args.input_size
     )
 
-                    
     if args.finetune:
         if args.finetune.startswith('https'):
             checkpoint = torch.hub.load_state_dict_from_url(
@@ -329,14 +351,16 @@ def main(args):
         num_patches = model.patch_embed.num_patches
         num_extra_tokens = model.pos_embed.shape[-2] - num_patches
         # height (== width) for the checkpoint position embedding
-        orig_size = int((pos_embed_checkpoint.shape[-2] - num_extra_tokens) ** 0.5)
+        orig_size = int(
+            (pos_embed_checkpoint.shape[-2] - num_extra_tokens) ** 0.5)
         # height (== width) for the new position embedding
         new_size = int(num_patches ** 0.5)
         # class_token and dist_token are kept unchanged
         extra_tokens = pos_embed_checkpoint[:, :num_extra_tokens]
         # only the position tokens are interpolated
         pos_tokens = pos_embed_checkpoint[:, num_extra_tokens:]
-        pos_tokens = pos_tokens.reshape(-1, orig_size, orig_size, embedding_size).permute(0, 3, 1, 2)
+        pos_tokens = pos_tokens.reshape(-1, orig_size,
+                                        orig_size, embedding_size).permute(0, 3, 1, 2)
         pos_tokens = torch.nn.functional.interpolate(
             pos_tokens, size=(new_size, new_size), mode='bicubic', align_corners=False)
         pos_tokens = pos_tokens.permute(0, 2, 3, 1).flatten(1, 2)
@@ -344,9 +368,9 @@ def main(args):
         checkpoint_model['pos_embed'] = new_pos_embed
 
         model.load_state_dict(checkpoint_model, strict=False)
-        
+
     if args.attn_only:
-        for name_p,p in model.named_parameters():
+        for name_p, p in model.named_parameters():
             if '.attn.' in name_p:
                 p.requires_grad = True
             else:
@@ -366,7 +390,7 @@ def main(args):
                 p.requires_grad = False
         except:
             print('no patch embed')
-            
+
     model.to(device)
 
     model_ema = None
@@ -380,16 +404,18 @@ def main(args):
 
     model_without_ddp = model
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+        model = torch.nn.parallel.DistributedDataParallel(
+            model, device_ids=[args.gpu])
         model_without_ddp = model.module
-    n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    n_parameters = sum(p.numel()
+                       for p in model.parameters() if p.requires_grad)
     print('number of params:', n_parameters)
 
     if not args.unscale_lr:
         linear_scaled_lr = args.lr * args.batch_size * utils.get_world_size() / 512.0
         args.lr = linear_scaled_lr
     optimizer = create_optimizer(args, model_without_ddp)
-    
+
     # amp about
     amp_autocast = suppress
     loss_scaler = "none"
@@ -408,10 +434,10 @@ def main(args):
         criterion = LabelSmoothingCrossEntropy(smoothing=args.smoothing)
     else:
         criterion = torch.nn.CrossEntropyLoss()
-        
+
     if args.bce_loss:
         criterion = torch.nn.BCEWithLogitsLoss()
-        
+
     teacher_model = None
     if args.distillation_type != 'none':
         assert args.teacher_path, 'need to specify teacher-path when using distillation'
@@ -450,21 +476,24 @@ def main(args):
             lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
             args.start_epoch = checkpoint['epoch'] + 1
             if args.model_ema:
-                utils._load_checkpoint_for_ema(model_ema, checkpoint['model_ema'])
-            if 'scaler' in checkpoint and args.if_amp: # change loss_scaler if not amp
+                utils._load_checkpoint_for_ema(
+                    model_ema, checkpoint['model_ema'])
+            if 'scaler' in checkpoint and args.if_amp:  # change loss_scaler if not amp
                 loss_scaler.load_state_dict(checkpoint['scaler'])
             elif 'scaler' in checkpoint and not args.if_amp:
                 loss_scaler = 'none'
         lr_scheduler.step(args.start_epoch)
-        
+
     if args.eval:
         test_stats = evaluate(data_loader_val, model, device, amp_autocast)
-        print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
+        print(
+            f"Accuracy of the network on the {len(dataset_val)} test images: \n Acc@1 {test_stats['acc1']:.1f}% Acc@5 {test_stats['acc5']:.1f}%")
         return
-    
+
     # log about
-    if args.local_rank == 0 and args.gpu == 0:
-        mlflow.log_param("n_parameters", n_parameters)
+    if args.local_rank and args.gpu:
+        if args.local_rank == 0 and args.gpu == 0:
+            mlflow.log_param("n_parameters", n_parameters)
 
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
@@ -477,7 +506,8 @@ def main(args):
             model, criterion, data_loader_train,
             optimizer, device, epoch, loss_scaler, amp_autocast,
             args.clip_grad, model_ema, mixup_fn,
-            set_training_mode=args.train_mode,  # keep in eval mode for deit finetuning / train mode for training and deit III finetuning
+            # keep in eval mode for deit finetuning / train mode for training and deit III finetuning
+            set_training_mode=args.train_mode,
             args=args,
         )
 
@@ -494,11 +524,11 @@ def main(args):
                     'scaler': loss_scaler.state_dict() if loss_scaler != 'none' else loss_scaler,
                     'args': args,
                 }, checkpoint_path)
-             
 
         test_stats = evaluate(data_loader_val, model, device, amp_autocast)
-        print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
-        
+        print(
+            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
+
         if max_accuracy < test_stats["acc1"]:
             max_accuracy = test_stats["acc1"]
             if args.output_dir:
@@ -513,20 +543,19 @@ def main(args):
                         'scaler': loss_scaler.state_dict() if loss_scaler != 'none' else loss_scaler,
                         'args': args,
                     }, checkpoint_path)
-            
+
         print(f'Max accuracy: {max_accuracy:.2f}%')
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},
                      'epoch': epoch,
                      'n_parameters': n_parameters}
-        
+
         # log about
         if args.local_rank == 0 and args.gpu == 0:
             for key, value in log_stats.items():
                 mlflow.log_metric(key, value, log_stats['epoch'])
-        
-        
+
         if args.output_dir and utils.is_main_process():
             with (output_dir / "log.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
@@ -537,7 +566,8 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('DeiT training and evaluation script', parents=[get_args_parser()])
+    parser = argparse.ArgumentParser(
+        'DeiT training and evaluation script', parents=[get_args_parser()])
     args = parser.parse_args()
     if args.output_dir:
         Path(args.output_dir).mkdir(parents=True, exist_ok=True)
